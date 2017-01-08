@@ -5,22 +5,22 @@ import sys
 import time
 import math
 def writedict(filename, dictionary):
-    """Given a filename and a dictionary (or list...), writes the dictionary to file as json.
-    The dictionary can then be retrieved with the getdict function below.
-    Setting pretty to false can make the file considerably smaller, at the cost of being almost unintelligable.
-    """
-    with open(filename,'w') as jsonfile:
-        jsonfile.write(json.dumps(dictionary,
-                                  sort_keys=True,
-                                  indent=4, separators=(',', ': ')))
+  """Given a filename and a dictionary (or list...), writes the dictionary to file as json.
+  The dictionary can then be retrieved with the getdict function below.
+  Setting pretty to false can make the file considerably smaller, at the cost of being almost unintelligable.
+  """
+  with open(filename,'w') as jsonfile:
+    jsonfile.write(json.dumps(dictionary,
+                              sort_keys=True,
+                              indent=4, separators=(',', ': ')))
 def getdict(filename):
-    """Given the name of a json file, reads the file in and returns the object it contains
-    """
-    jsondict = None
-    with open(filename,'r') as settings:
-        jsondict = json.loads(settings.read())
-        #reads the entire settings file with .read(), then loads it as a json dictionary, and stores it into jsondict
-    return jsondict
+  """Given the name of a json file, reads the file in and returns the object it contains
+  """
+  jsondict = None
+  with open(filename,'r') as settings:
+    jsondict = json.loads(settings.read())
+    #reads the entire settings file with .read(), then loads it as a json dictionary, and stores it into jsondict
+  return jsondict
 
 def main():
   path_to_watch = "C:\\Users\\[example]\\Saved Games\\Frontier Developments\\Elite Dangerous\\"
