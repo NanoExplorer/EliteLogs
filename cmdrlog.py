@@ -1,9 +1,83 @@
 import os,time,json
-#import winclip
 import signal
 import sys
 import time
 import math
+#START CLIPBOARD HELPER DEFINITION
+#This was copied from some random stack overflow page.
+import ctypes
+
+OpenClipboard = ctypes.windll.user32.OpenClipboard
+EmptyClipboard = ctypes.windll.user32.EmptyClipboard
+GetClipboardData = ctypes.windll.user32.GetClipboardData
+SetClipboardData = ctypes.windll.user32.SetClipboardData
+CloseClipboard = ctypes.windll.user32.CloseClipboard
+CF_UNICODETEXT = 13
+
+GlobalAlloc = ctypes.windll.kernel32.GlobalAlloc
+GlobalLock = ctypes.windll.kernel32.GlobalLock
+GlobalUnlock = ctypes.windll.kernel32.GlobalUnlock
+GlobalSize = ctypes.windll.kernel32.GlobalSize
+GMEM_MOVEABLE = 0x0002
+GMEM_ZEROINIT = 0x0040
+
+unicode_type = type(u'')
+
+def paste():
+    text = None
+    OpenClipboard(None)
+    handle = GetClipboardData(CF_UNICODETEXT)
+    pcontents = GlobalLock(handle)
+    size = GlobalSize(handle)
+    if pcontents and size:
+        raw_data = ctypes.create_string_buffer(size)
+        ctypes.memmove(raw_data, pcontents, size)
+        text = raw_data.raw.decode('utf-16le').rstrip(u'\0')
+    GlobalUnlock(handle)
+    CloseClipboard()
+    return text
+
+def copy(s):
+    if not isinstance(s, unicode_type):
+        s = s.decode('mbcs')
+    data = s.encode('utf-16le')
+    OpenClipboard(None)
+    EmptyClipboard()
+    handle = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, len(data) + 2)
+    pcontents = GlobalLock(handle)
+    ctypes.memmove(pcontents, data, len(data))
+    GlobalUnlock(handle)
+    SetClipboardData(CF_UNICODETEXT, handle)
+    CloseClipboard()
+#END CLIPBOARD HELPER DEFINITION
+"""
+materials I want
+FSD
+Vanadium  2 1    17 *
+Germanium 1 1    36
+Cadmium     2    30
+Arsenic       1  11
+Niobium     1 3  43
+Yttrium       1  15
+Polonium      1  6
+
+AFM
+
+Nickel    2      27
+Zinc      2   2  24
+Chromium  2   4  39
+Vanadium  3 6 6  17 *
+Tin         1    11
+Manganese   2    43
+Molybdenum  1    11
+Zirconium   1 2  8
+Tellurium     1  10
+Ruthenium     1  13
+
+
+"""
+
+
 def writedict(filename, dictionary):
     """Given a filename and a dictionary (or list...), writes the dictionary to file as json.
     The dictionary can then be retrieved with the getdict function below.
@@ -23,9 +97,20 @@ def getdict(filename):
     return jsondict
 
 def main():
-    path_to_watch = "C:\\Users\\[example]\\Saved Games\\Frontier Developments\\Elite Dangerous\\"
-    if path_to_watch == "C:\\Users\\[example]\\Saved Games\\Frontier Developments\\Elite Dangerous\\":
-        print("To initialize this script, please edit the path_to_watch variable in the main() function to point to your commander log location.")
+    if not os.path.isfile('user.conf'):
+        print("This is your first time running this program. Please input the name of your windows user folder or type 1 for more options, then press RETURN to continue.")
+        user = input()
+        if user == '1':
+            print("Please type the full path to your commander log folder. For example:")
+            print("C:\\Users\\UserName\\Saved Games\\Frontier Developments\\Elite Dangerous\\")
+            path_to_watch = input()
+        else:
+            path_to_watch = "C:\\Users\\{}\\Saved Games\\Frontier Developments\\Elite Dangerous\\".format(user)
+        with open('user.conf', 'w') as userconfig:
+            userconfig.write(path_to_watch)
+    else:
+        with open('user.conf', 'r') as userconfig:
+            path_to_watch = userconfig.read()
     print(path_to_watch)
     before= dict([(f,os.stat(path_to_watch+f).st_size) for f in os.listdir(path_to_watch)])
     with LogManager() as watcher:
@@ -145,6 +230,15 @@ have {FuelLevel:.2f} tonnes remaining.""".format(**info))
     def Scan(self,info):
         print(json.dumps(info,sort_keys=True,indent=4, separators=(',', ': ')))
         self.scandatabase.append(info)
+        return
+        """
+        ifprint(info,"BodyName")
+        ifprint(info,"TerraformState")
+        ifprint(info,"Atmosphere")   
+        if "Landable" in info:
+            if info["Landable"] == True:
+                print("Landable!")
+        ifprint(info,"""
 
     def JetConeBoost(self,info):
         print("""***********************************************************
@@ -170,6 +264,14 @@ Predicted Jump Range:
 """.format(getrange(self.shipmass,self.fuel,4) ))
 #Fuel = 0.012 * (distance*mass/optimal mass)^2.45
 #distance = 2.45root(fuel/0.012)*optimal mass/mass
+
+def ifprint(stuff,key):
+    if key in stuff:
+        print(stuff["key"])
+
+def ifprint2(stuff,key):
+    if key in stuff:
+        print(key,":",stuff["key"])
 
 def getrange(mass,fuel,mult):
     return mult*(5.279/0.012)**(1/2.45)*1560.9/(mass-32+fuel)
