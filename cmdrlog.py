@@ -25,7 +25,7 @@ def getdict(filename):
 def main():
   path_to_watch = "C:\\Users\\[example]\\Saved Games\\Frontier Developments\\Elite Dangerous\\"
   if path_to_watch == "C:\\Users\\[example]\\Saved Games\\Frontier Developments\\Elite Dangerous\\":
-	print("To initialize this script, please edit the path_to_watch variable in the main() function to point to your commander log location.")
+    print("To initialize this script, please edit the path_to_watch variable in the main() function to point to your commander log location.")
   print(path_to_watch)
   before= dict([(f,os.stat(path_to_watch+f).st_size) for f in os.listdir(path_to_watch)])
   with LogManager() as watcher:
