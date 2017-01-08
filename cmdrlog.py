@@ -1,5 +1,5 @@
 import os,time,json
-import winclip
+#import winclip
 import signal
 import sys
 import time
@@ -110,15 +110,15 @@ have {FuelLevel:.2f} tonnes remaining.""".format(**info))
     startingFuel=info["FuelUsed"]+info["FuelLevel"]
     #print("DEBUG: {} {} {}".format(info["JumpDist"],info["FuelUsed"],startingFuel))
     
-    if info["StarSystem"].lower() in self.route:
-      print("You have arrived at your next waypoint!")
-      print("Copying the next waypoint to clipboard...")
-      nextwaypoint = self.route[self.route.index(info["StarSystem"].lower())+1]
-      print("The next waypoint is {}".format(nextwaypoint))
-      winclip.copy(nextwaypoint)
-      #r.destroy()
-      print(nextwaypoint)
-      print(type(nextwaypoint))
+    #if info["StarSystem"].lower() in self.route:
+    #  print("You have arrived at your next waypoint!")
+    #  print("Copying the next waypoint to clipboard...")
+    #  nextwaypoint = self.route[self.route.index(info["StarSystem"].lower())+1]
+    #  print("The next waypoint is {}".format(nextwaypoint))
+    #  winclip.copy(nextwaypoint)
+    #  #r.destroy()
+    #  print(nextwaypoint)
+    #  print(type(nextwaypoint))
     self.times.append(time.time()-self.lastjump)
     print("Jump time: {:.1f} seconds.".format(time.time()-self.lastjump))
     self.lastjump=time.time()
