@@ -11,19 +11,24 @@ Once you start this program it will begin watching the commander's log and print
 At any time, you can use the built in commands. Type `help` to list them! I'll also produce the manual here:
 Available commands are:
 ship
+
 *Asks for and sets information about your ship, used for calculating jump range.
     
 cargo [number]
+
 *Sets the amount of cargo tonnage you are currently hauling.
     
 origin [system name]
+
 *Sets the system to display distances relative to. i.e. after `origin Merope` on FSD jump
      it might say "you've arrived in the Pleiades xy-z 3834 system and are 32 light years from Merope".
      
 help
+
 *Lists available commands (prints this message)
     
 exit
+
 *Quits the program
 
 Fly safe!
